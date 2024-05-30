@@ -24,22 +24,32 @@ class ProductController extends Controller
         //インスタンスを生成　コーチと作成この書き方絶対覚える
         $model = new Product();
         // $products = $model ->getList();
-        $companies=Company::all();
+        // $companies=Company::all();
         // $companymodel = new Company();
         // $companies = $companymodel ->getList();
+        //view側 name属性に設定したものを引数に入れてフォームに入力した値をRequestで取得
+        
         $keyword = $request->input('keyword');
         $companyKeyword = $request ->input('companyKeyword');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
+        $minStock = $request->input('minStock');
+        $maxStock = $request->input('maxStock');
+        $companies = DB::table('companies')->get();
+        
 
         if(is_null($keyword)  && is_null($companyKeyword)){
             $products =$model ->getList();
             // dd('一覧');
         }else{
-            $products =$model ->SearchList($keyword,$companyKeyword);
+            $products =$model ->SearchList($keyword,$companyKeyword,$minPrice, $maxPrice, $minStock, $maxStock);
+           
             // dd('検索');
         }
+       
 
         //viewにインスタンスを渡す　productsテーブル内のデータがはいっている＄productsという変数をわたす
-         return view('product_list', ['products' => $products, 'companies' => $companies, 'keyword'=>$keyword,'companyKeyword'=>$companyKeyword]);
+         return view('product_list', ['products' => $products,'companies'=>$companies,'keyword'=>$keyword,'companyKeyword'=>$companyKeyword]);
     }
     
 
@@ -116,9 +126,22 @@ class ProductController extends Controller
     
             $keyword = $request->input('keyword');
             $companyKeyword = $request->input('companyKeyword');
+            $minPrice = $request->input('minPrice');
+            $maxPrice = $request->input('maxPrice');
+            $minStock = $request->input('minStock');
+            $maxStock = $request->input('maxStock');
+
             $products =new Product();
-            $products = $products->SearchList($keyword,$companyKeyword);
-            return view('product_list',['keyword'=>$keyword,'companyKeyword'=>$companyKeyword]);
+            // $companies = new Company();
+            // $companies= $companies ->getCompanyList($keyword,$companyKeyword);
+            $products = $products->SearchList($keyword,$companyKeyword,$minPrice,$maxPrice,$minStock,$maxStock);
+            return response()->json([
+                'products' => $products,
+                // 'companies' => $companies,
+            ]);
+
+            // // 5.14 STEP8拡張のためコメントアウト
+            // return view('product_list',['keyword'=>$keyword,'companyKeyword'=>$companyKeyword]);
 
 
 
@@ -127,27 +150,36 @@ class ProductController extends Controller
 
 
 
-    //削除処理 destroyのほうが良かった？
-    public function delete($id)
-    {   
-        $product =Product::find($id);
-        $product->delete();
-        //  Product::destroy($id);
-        // // レコードを削除
+    // //削除処理 STEP7ver destroyのほうが良かった？
+    // public function delete($id)
+    // {   
+    //     $product =Product::find($id);
+    //     $product->delete();
+    //     //  Product::destroy($id);
+    //     // // レコードを削除
        
-        return redirect(route('product_list'));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
-    }
+    //     return redirect(route('product_list'));
+    // }
+//削除処理 STEP8 拡張ver  destroyのほうが良かった？
+    public function delete(Request $request) {
+        // dd($request);
+        $input = $request->all();
+        // dd($input);
+            DB::beginTransaction();
+    
+            try {
+              $product = Product::find($input['product']); 
+              $product->delete();
+    
+              DB::commit();
+              return response()->json(['success' => true]);
+              return redirect(route('product_list'));
+    
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['success' => false, 'message' => '削除に失敗しました']);
+            }
+        }
 
     /**
      * 商品情報編集画面

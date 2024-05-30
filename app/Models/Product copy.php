@@ -8,9 +8,10 @@ use App\Models\Company;
 
 use Illuminate\Support\Facades\DB;
 
+
 class Product extends Model
 {   
-
+   
     use HasFactory;
 
     protected $fillable =[
@@ -47,27 +48,27 @@ class Product extends Model
 
     }
     //検索処理
-    public function SearchList($keyword,$companyKeyword){
-        if(!is_null($keyword)  && !is_null($companyKeyword)){
+    public function SearchList($keyword,$companyKeyword,$minPrice,$maxPrice,$minStock,$maxStock){
+        if(!is_null($keyword)  && !is_null($companyKeyword) && !is_null($minPrice) && !is_null($maxPrice) && !is_null($minStock) && !is_null($maxStock)){
             // dd($keyword);
         $products=DB::table('products')
         ->join('companies','products.company_id','=','companies.id')
         ->select('products.*','companies.company_name')
         ->where('products.product_name','LIKE',$keyword)
-     
         ->where('products.company_id','=',$companyKeyword)
+        ->where('products.price','>=',$minPrice)
+        ->where('products.price','<=',$maxPrice)
+        ->where('products.stock','>=',$minStock)
+        ->where('products.stock','<=',$maxStock)
         ->get();
         // dd($products);
-    
-      
-       
-      
+
     }elseif(!is_null($companyKeyword)){
         $products=DB::table('products')
         ->join('companies','products.company_id','=','companies.id')
         ->select('products.*','companies.company_name')
         // ->where('products.product_name','LIKE',$keyword)
-        ->where('companies.id','LIKE',$companyKeyword)
+        ->where('products.companyid','=',$companyKeyword)
         ->get();
         
      
@@ -77,9 +78,35 @@ class Product extends Model
         ->select('products.*','companies.company_name')
         ->where('products.product_name','LIKE',$keyword)
     
+        ->get();       
+    }elseif(!is_null($minPrice) ){
+        $products=DB::table('products')
+        ->join('companies','products.company_id','=','companies.id')
+        ->select('products.*','companies.company_name')
+        ->where('products.price','>=',$minPrice)
+    
         ->get();
-        
-
+    }elseif(!is_null($maxPrice) ){
+        $products=DB::table('products')
+        ->join('companies','products.company_id','=','companies.id')
+        ->select('products.*','companies.company_name')
+        ->where('products.price','<=',$maxPrice)
+    
+        ->get();
+    }elseif(!is_null($minStock) ){
+        $products=DB::table('products')
+        ->join('companies','products.company_id','=','companies.id')
+        ->select('products.*','companies.company_name')
+        ->where('products.stock','>=',$minStock)
+    
+        ->get();
+    }elseif(!is_null($maxStock) ){
+        $products=DB::table('products')
+        ->join('companies','products.company_id','=','companies.id')
+        ->select('products.*','companies.company_name')
+        ->where('products.stock','<=',$maxStock)
+    
+        ->get();
     }
     return $products;
     }

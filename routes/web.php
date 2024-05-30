@@ -47,7 +47,7 @@ Route::post('/product_update/{id}', [App\Http\Controllers\ProductController::cla
 
 
 //削除ボタン
-Route::post('/delete/{id}', [App\Http\Controllers\ProductController::class, 'delete'])->name('product_delete');
+Route::post('/delete', [App\Http\Controllers\ProductController::class, 'delete'])->name('product_delete');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

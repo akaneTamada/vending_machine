@@ -15,21 +15,30 @@
     <!-- cssスタイルシート　パブリック→CSSフォルダ→styleの読み込み -->
     <link rel="stylesheet" href="{{ asset('/css/style.css') }}">
     <!-- Scripts -->
+     <!-- jquery CDN　コピペ -->
+ <script
+ src="https://code.jquery.com/jquery-3.7.1.min.js"
+ integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+ crossorigin="anonymous"></script> 
+ {{-- search.jsとdelete.jsの読み込み --}}
+ <script src="{{ asset('/js/search2.js') }}"></script> 
+ <script src="{{ asset('/js/delete.js') }}"></script> 
+
+
+
+ {{-- tablesorterのjsとCSSを読み込み →ソート部分を限定するためにCSSはコメントアウト--}}
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/js/jquery.tablesorter.min.js"></script>
+ {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/css/theme.default.min.css"> --}}
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     @stack('styles')
+   
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                {{-- <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a> --}}
-                {{-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button> --}}
-
+              
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
@@ -79,5 +88,15 @@
             @yield('content')
         </main>
     </div>
+    {{-- <script>
+        $(document).ready(function() {
+            $('#fav-table').tablesorter({
+                    headers: {
+                       6: { sorter: false },
+                       7: { sorter: false }
+                    }
+            });
+        });
+        </script> --}}
 </body>
 </html>
