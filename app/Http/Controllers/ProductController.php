@@ -38,14 +38,10 @@ class ProductController extends Controller
         $companies = DB::table('companies')->get();
         
 
-        if(is_null($keyword)  && is_null($companyKeyword)){
-            $products =$model ->getList();
-            // dd('一覧');
-        }else{
+       
             $products =$model ->SearchList($keyword,$companyKeyword,$minPrice, $maxPrice, $minStock, $maxStock);
            
-            // dd('検索');
-        }
+       
        
 
         //viewにインスタンスを渡す　productsテーブル内のデータがはいっている＄productsという変数をわたす

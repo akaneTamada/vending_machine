@@ -28,7 +28,7 @@
                         <input type="text" name="minStock" id="minStock" placeholder="最低在庫数">
                         <input type="text" name="maxStock" id="maxStock" placeholder="最高在庫数">
                     </div>
-                    <button type="button" value="検索" class="search">検索</button>
+                    <button type="submit" value="検索" class="search">検索</button>
             </label>
         </form>  
     

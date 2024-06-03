@@ -58,10 +58,19 @@ class Product extends Model
 
         //検索キーワード（商品名が）NULLでなかったら
         if(!is_null($keyword)) {
-            $products->where('name', 'LIKE', "%{$keyword}%");
+            $products=DB::table('products')
+            ->join('companies','products.company_id','=','companies.id')
+            ->select('products.*','companies.company_name')
+            ->where('products.product_name','LIKE',$keyword)
+            ->get();    
         }
         if(!is_null($companyKeyword)) {
-            $products->where('company_id', '=', "$companyKeyword");
+            $products=DB::table('products')
+            ->join('companies','products.company_id','=','companies.id')
+            ->select('products.*','companies.company_name')
+            // ->where('products.product_name','LIKE',$keyword)
+            ->where('products.companyid','=',$companyKeyword)
+            ->get();
         }
         if((isset($minPrice)) && (isset($maxPrice))) {
                     $products->whereBetween('price',[$minPrice, $maxPrice]);
