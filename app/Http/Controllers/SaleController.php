@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sale;
 use App\Models\Product; // Productモデルを使用
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -14,7 +15,9 @@ class SaleController extends Controller
      * 
      */
     public function purchase(Request $request)
-    {
+    {   
+        DB::beginTransaction();
+        try{
         //リクエストから商品IDを取得
         $productId = $request-> input('product_id');
         //リクエストから購入個数を取得
@@ -41,11 +44,15 @@ class SaleController extends Controller
         ]);
 
         $sale ->save();
+        DB::commit();
         //レスポンスを返す
         return response()->json(['message','購入成功！']);
 
+    }   catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' , '購入処理に失敗しました']);
     }
-
+    }
     /**
      * Show the form for creating a new resource.
      *
